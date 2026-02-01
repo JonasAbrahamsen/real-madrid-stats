@@ -25,7 +25,7 @@ class RealMadridDataFetcher:
         # Real Madrid & La Liga IDs (hardkodet for effektivitet)
         self.team_id = 541  # Real Madrid
         self.league_id = 140  # La Liga
-        self.season = "2024"  # Oppdateres automatisk i find_current_season()
+        self.season = "2024"  # Free plan: kun 2022-2024
         
         self.data = {
             "team_info": {},
@@ -249,7 +249,7 @@ class RealMadridDataFetcher:
         print("=" * 60)
         
         # Finn current season først
-        self.find_current_season()
+   # self.find_current_season()  # Disabled: Free plan limit
         
         tasks = [
             ("Team Info", self.fetch_team_info),
