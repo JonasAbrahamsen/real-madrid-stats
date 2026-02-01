@@ -248,7 +248,6 @@ class RealMadridDataFetcher:
         print("🏆 REAL MADRID STATS - DATA FETCHER")
         print("=" * 60)
         
-        # Finn current season først
    # self.find_current_season()  # Disabled: Free plan limit
         
         tasks = [
