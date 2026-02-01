@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Madrid Stats | Real Madrid Norge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        :root {
+            --rm-navy: #00255E;
+            --rm-navy-dark: #001840;
+            --rm-white: #FFFFFF;
+            --rm-gold: #C5A572;
+            --rm-bg: #F5F7FA;
+            --rm-border: #E5E7EB;
+            --rm-text: #1F2937;
+            --rm-text-light: #6B7280;
+        }
+        
+        body {
+            background: var(--rm-bg);
+            color: var(--rm-text);
+        }
+        
+        .rm-header {
+            background: white;
+            border-bottom: 1px solid var(--rm-border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .score-banner {
+            background: linear-gradient(135deg, var(--rm-navy) 0%, #003A7B 100%);
+            color: white;
+        }
+        
+        .rm-tabs {
+            background: white;
+            border-bottom: 1px solid var(--rm-border);
+            position: sticky;
+            top: 72px;
+            z-index: 40;
+        }
+        
+        .rm-tab {
+            color: var(--rm-text-light);
+            font-weight: 600;
+            font-size: 15px;
+            padding: 1rem 1.5rem;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .rm-tab:hover {
+            color: var(--rm-navy);
+        }
+        
+        .rm-tab.active {
+            color: var(--rm-navy);
+            border-bottom-color: var(--rm-navy);
+        }
+        
+        .rm-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+        
+        .rm-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        .rm-button {
+            background: var(--rm-navy);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .rm-button:hover {
+            background: var(--rm-navy-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 37, 94, 0.3);
+        }
+        
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--rm-bg);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .form-indicator {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            color: white;
+        }
+        
+        .form-w { background: #10B981; }
+        .form-d { background: #F59E0B; }
+        .form-l { background: #EF4444; }
+        
+        .rm-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .rm-table thead {
+            background: var(--rm-bg);
+        }
+        
+        .rm-table th {
+            padding: 1rem;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--rm-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .rm-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--rm-border);
+        }
+        
+        .rm-table tbody tr:hover {
+            background: #F9FAFB;
+        }
+        
+        .rm-table tbody tr.highlight {
+            background: #FEF3C7;
+        }
+        
+        .rm-table tbody tr.highlight:hover {
+            background: #FDE68A;
+        }
+        
+        .pitch {
+            background: linear-gradient(to bottom, #0EA574 0%, #0EA574 50%, #15B883 50%, #15B883 100%);
+            border: 3px solid white;
+            border-radius: 8px;
+            position: relative;
+            aspect-ratio: 2/3;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .pitch-line {
+            position: absolute;
+            background: white;
+        }
+        
+        .pitch-middle {
+            top: 49.5%;
+            left: 0;
+            width: 100%;
+            height: 3px;
+        }
+        
+        .pitch-circle {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20%;
+            height: calc(20% * 2 / 3);
+            border: 3px solid white;
+            border-radius: 50%;
+        }
+        
+        .pitch-box-top {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 20%;
+            border: 3px solid white;
+            border-top: none;
+        }
+        
+        .pitch-box-bottom {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 20%;
+            border: 3px solid white;
+            border-bottom: none;
+        }
+        
+        .player-dot {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--rm-navy);
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .player-dot:hover {
+            transform: scale(1.15);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .player-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        
+        .player-dot:hover .player-label {
+            opacity: 1;
+        }
+        
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 2rem;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        .dropdown {
+            position: relative;
+        }
+        
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--rm-border);
+            border-radius: 8px;
+            margin-top: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 50;
+        }
+        
+        .dropdown-content.active {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--rm-bg);
+        }
+        
+        @media (max-width: 768px) {
+            .rm-tab {
+                padding: 0.75rem 1rem;
+                font-size: 14px;
+            }
+            
+            .stat-badge {
+                font-size: 11px;
+                padding: 0.4rem 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="rm-header sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold" style="color: var(--rm-navy)">Real Madrid Stats</h1>
+                    <p class="text-sm text-gray-500">Real Madrid Norge</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-gray-600 hidden sm:block">Sesong 2024/25</span>
+                <button class="rm-button" onclick="updateData()">
+                    <span class="hidden sm:inline">Oppdater data</span>
+                    <span class="sm:hidden">↻</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Score Banner -->
+    <div class="score-banner py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center">
+                <p class="text-sm mb-3 opacity-80">La Liga • Matchday 22 • Estadio Bernabéu</p>
+                <div class="flex items-center justify-center gap-4 sm:gap-8 flex-wrap">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg sm:text-2xl font-bold">Real Madrid</span>
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                            <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <span class="text-4xl sm:text-5xl font-black">2</span>
+                        <span class="text-xl sm:text-2xl opacity-50">-</span>
+                        <span class="text-4xl sm:text-5xl font-black">1</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                            <span class="text-2xl">⚡</span>
+                        </div>
+                        <span class="text-lg sm:text-2xl font-bold">Rayo Vallecano</span>
+                    </div>
+                </div>
+                <span class="inline-block mt-4 px-4 py-1 bg-white/20 rounded-full text-sm font-semibold">Finished</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="rm-tabs">
+        <div class="max-w-7xl mx-auto px-4 flex gap-0 overflow-x-auto hide-scrollbar">
+            <div class="rm-tab active" onclick="showTab('oppsummering')">Oppsummering</div>
+            <div class="rm-tab" onclick="showTab('spillere')">Spillere</div>
+            <div class="rm-tab" onclick="showTab('kamper')">Kamper</div>
+            <div class="rm-tab" onclick="showTab('predictions')">Predictions</div>
+            <div class="rm-tab" onclick="showTab('headtohead')">Head to Head</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- OPPSUMMERING TAB -->
+        <div id="oppsummering-tab" class="tab-content animate-fade-in">
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="rm-card p-6 text-center">
+                    <p class="text-sm text-gray-500 mb-2 uppercase tracking-wide">Plassering</p>
+                    <p class="text-5xl font-black mb-1" style="color: var(--rm-navy)">2<sup class="text-2xl">nd</sup></p>
+                    <p class="text-xs text-gray-400 mt-2">La Liga • 50 poeng</p>
+                </div>
+                <div class="rm-card p-6 text-center">
+                    <p class="text-sm text-gray-500 mb-2 uppercase tracking-wide">Form</p>
+                    <div class="flex justify-center gap-1 mt-3">
+                        <div class="form-indicator form-w">W</div>
+                        <div class="form-indicator form-w">W</div>
+                        <div class="form-indicator form-d">D</div>
+                        <div class="form-indicator form-l">L</div>
+                        <div class="form-indicator form-w">W</div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-3">Siste 5 kamper</p>
+                </div>
+                <div class="rm-card p-6 text-center">
+                    <p class="text-sm text-gray-500 mb-2 uppercase tracking-wide">Mål Scoret</p>
+                    <p class="text-5xl font-black text-green-600">53</p>
+                    <p class="text-xs text-gray-400 mt-2">2.4 per kamp</p>
+                </div>
+                <div class="rm-card p-6 text-center">
+                    <p class="text-sm text-gray-500 mb-2 uppercase tracking-wide">Mål Innsluppet</p>
+                    <p class="text-5xl font-black text-red-600">24</p>
+                    <p class="text-xs text-gray-400 mt-2">1.1 per kamp</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6 mb-8">
+                <!-- Toppscorere -->
+                <div class="rm-card p-6">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" style="color: var(--rm-navy)">
+                        <span>⚽</span> Toppscorere
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center text-white font-bold text-sm">7</div>
+                                <div>
+                                    <p class="font-semibold">Kylian Mbappé</p>
+                                    <p class="text-xs text-gray-500">Angriper</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-green-600">18</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-900 to-purple-700 rounded-full flex items-center justify-center text-white font-bold text-sm">20</div>
+                                <div>
+                                    <p class="font-semibold">Vinícius Júnior</p>
+                                    <p class="text-xs text-gray-500">Venstre Wing</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-green-600">15</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-indigo-900 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-sm">5</div>
+                                <div>
+                                    <p class="font-semibold">Jude Bellingham</p>
+                                    <p class="text-xs text-gray-500">Midtbane</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-green-600">12</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-900 to-green-700 rounded-full flex items-center justify-center text-white font-bold text-sm">11</div>
+                                <div>
+                                    <p class="font-semibold">Rodrygo</p>
+                                    <p class="text-xs text-gray-500">Høyre Wing</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-green-600">8</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center text-white font-bold text-sm">15</div>
+                                <div>
+                                    <p class="font-semibold">Federico Valverde</p>
+                                    <p class="text-xs text-gray-500">Sentral Midtbane</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-green-600">4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assists -->
+                <div class="rm-card p-6">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" style="color: var(--rm-navy)">
+                        <span>🎯</span> Flest Assists
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-900 to-purple-700 rounded-full flex items-center justify-center text-white font-bold text-sm">20</div>
+                                <div>
+                                    <p class="font-semibold">Vinícius Júnior</p>
+                                    <p class="text-xs text-gray-500">Venstre Wing</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-blue-600">8</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-gray-700 to-gray-900 rounded-full flex items-center justify-center text-white font-bold text-sm">15</div>
+                                <div>
+                                    <p class="font-semibold">Federico Valverde</p>
+                                    <p class="text-xs text-gray-500">Sentral Midtbane</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-blue-600">7</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-900 to-green-700 rounded-full flex items-center justify-center text-white font-bold text-sm">11</div>
+                                <div>
+                                    <p class="font-semibold">Rodrygo</p>
+                                    <p class="text-xs text-gray-500">Høyre Wing</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-blue-600">6</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-indigo-900 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold text-sm">5</div>
+                                <div>
+                                    <p class="font-semibold">Jude Bellingham</p>
+                                    <p class="text-xs text-gray-500">Midtbane</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-blue-600">5</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center text-white font-bold text-sm">7</div>
+                                <div>
+                                    <p class="font-semibold">Kylian Mbappé</p>
+                                    <p class="text-xs text-gray-500">Angriper</p>
+                                </div>
+                            </div>
+                            <span class="text-2xl font-black text-blue-600">4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabell & Kort -->
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- La Liga Tabell (Top 5) -->
+                <div class="lg:col-span-2 rm-card">
+                    <div class="p-6 border-b">
+                        <h3 class="text-xl font-bold" style="color: var(--rm-navy)">La Liga Tabell</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="rm-table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>Lag</th>
+                                    <th class="text-center">K</th>
+                                    <th class="text-center">V</th>
+                                    <th class="text-center">U</th>
+                                    <th class="text-center">T</th>
+                                    <th class="text-center">+/-</th>
+                                    <th class="text-center">P</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center font-bold">1</td>
+                                    <td class="font-semibold">Barcelona</td>
+                                    <td class="text-center">22</td>
+                                    <td class="text-center">17</td>
+                                    <td class="text-center">3</td>
+                                    <td class="text-center">2</td>
+                                    <td class="text-center text-green-600 font-semibold">+42</td>
+                                    <td class="text-center font-black">54</td>
+                                </tr>
+                                <tr class="highlight">
+                                    <td class="text-center font-bold">2</td>
+                                    <td class="font-semibold">Real Madrid</td>
+                                    <td class="text-center">22</td>
+                                    <td class="text-center">15</td>
+                                    <td class="text-center">5</td>
+                                    <td class="text-center">2</td>
+                                    <td class="text-center text-green-600 font-semibold">+29</td>
+                                    <td class="text-center font-black">50</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-bold">3</td>
+                                    <td class="font-semibold">Atlético Madrid</td>
+                                    <td class="text-center">22</td>
+                                    <td class="text-center">14</td>
+                                    <td class="text-center">5</td>
+                                    <td class="text-center">3</td>
+                                    <td class="text-center text-green-600 font-semibold">+18</td>
+                                    <td class="text-center font-black">47</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-bold">4</td>
+                                    <td class="font-semibold">Athletic Bilbao</td>
+                                    <td class="text-center">22</td>
+                                    <td class="text-center">11</td>
+                                    <td class="text-center">7</td>
+                                    <td class="text-center">4</td>
+                                    <td class="text-center text-green-600 font-semibold">+11</td>
+                                    <td class="text-center font-black">40</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center font-bold">5</td>
+                                    <td class="font-semibold">Villarreal</td>
+                                    <td class="text-center">22</td>
+                                    <td class="text-center">10</td>
+                                    <td class="text-center">7</td>
+                                    <td class="text-center">5</td>
+                                    <td class="text-center text-green-600 font-semibold">+8</td>
+                                    <td class="text-center font-black">37</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Kort -->
+                <div class="rm-card p-6">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" style="color: var(--rm-navy)">
+                        <span>🟨</span> Gule Kort
+                    </h3>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium">Federico Valverde</span>
+                            <span class="font-bold text-yellow-600">5</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium">Jude Bellingham</span>
+                            <span class="font-bold text-yellow-600">4</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium">Vinícius Júnior</span>
+                            <span class="font-bold text-yellow-600">3</span>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2" style="color: var(--rm-navy)">
+                        <span>🟥</span> Røde Kort
+                    </h3>
+                    <div class="space-y-3">
+                        <p class="text-sm text-gray-500 italic">Ingen røde kort denne sesongen</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPILLERE TAB -->
+        <div id="spillere-tab" class="tab-content hidden">
+            
+            <!-- Formation Section -->
+            <div class="rm-card p-6 mb-8">
+                <h3 class="text-2xl font-bold mb-4" style="color: var(--rm-navy)">Mest Brukte Formasjon: 4-3-3</h3>
+                <div class="pitch mx-auto">
+                    <div class="pitch-line pitch-middle"></div>
+                    <div class="pitch-circle"></div>
+                    <div class="pitch-box-top"></div>
+                    <div class="pitch-box-bottom"></div>
+                    
+                    <!-- GK -->
+                    <div class="player-dot" style="bottom: 5%; left: 50%; transform: translateX(-50%);">
+                        <span>1</span>
+                        <div class="player-label">Courtois</div>
+                    </div>
+                    
+                    <!-- Defenders -->
+                    <div class="player-dot" style="bottom: 25%; left: 15%;">
+                        <span>2</span>
+                        <div class="player-label">Carvajal</div>
+                    </div>
+                    <div class="player-dot" style="bottom: 25%; left: 40%;">
+                        <span>3</span>
+                        <div class="player-label">Militão</div>
+                    </div>
+                    <div class="player-dot" style="bottom: 25%; left: 60%;">
+                        <span>4</span>
+                        <div class="player-label">Rüdiger</div>
+                    </div>
+                    <div class="player-dot" style="bottom: 25%; left: 85%;">
+                        <span>23</span>
+                        <div class="player-label">Mendy</div>
+                    </div>
+                    
+                    <!-- Midfielders -->
+                    <div class="player-dot" style="bottom: 50%; left: 30%;">
+                        <span>8</span>
+                        <div class="player-label">Kroos</div>
+                    </div>
+                    <div class="player-dot" style="bottom: 50%; left: 50%;">
+                        <span>10</span>
+                        <div class="player-label">Modrić</div>
+                    </div>
+                    <div class="player-dot" style="bottom: 50%; left: 70%;">
+                        <span>15</span>
+                        <div class="player-label">Valverde</div>
+                    </div>
+                    
+                    <!-- Forwards -->
+                    <div class="player-dot" style="bottom: 75%; left: 20%;">
+                        <span>20</span>
+                        <div class="player-label">Vinícius Jr</div>
+                    </div>
+                    <div class="player-dot" style="bottom: 80%; left: 50%;">
+                        <span>7</span>
+                        <div class="player-label">Mbappé</div>
+                    </div>
+                    <div class="player-dot" style="bottom: 75%; left: 80%;">
+                        <span>11</span>
+                        <div class="player-label">Rodrygo</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Players Table -->
+            <div class="rm-card">
+                <div class="p-6 border-b flex items-center justify-between flex-wrap gap-4">
+                    <h3 class="text-2xl font-bold" style="color: var(--rm-navy)">Spilleroversikt 2024/25</h3>
+                    <div class="flex gap-2 text-sm">
+                        <button class="px-4 py-2 bg-gray-100 rounded-lg font-semibold hover:bg-gray-200 transition" onclick="sortPlayers('goals')">Sorter: Mål</button>
+                        <button class="px-4 py-2 bg-gray-100 rounded-lg font-semibold hover:bg-gray-200 transition" onclick="sortPlayers('assists')">Assists</button>
+                        <button class="px-4 py-2 bg-gray-100 rounded-lg font-semibold hover:bg-gray-200 transition" onclick="sortPlayers('rating')">Rating</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="rm-table">
+                        <thead>
+                            <tr>
+                                <th>Spiller</th>
+                                <th class="text-center">Pos</th>
+                                <th class="text-center">Kamper</th>
+                                <th class="text-center">Min</th>
+                                <th class="text-center">⚽ Mål</th>
+                                <th class="text-center">🎯 Assists</th>
+                                <th class="text-center">⭐ Rating</th>
+                                <th class="text-center">🟨 Kort</th>
+                                <th class="text-center">🤕 Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="players-table-body">
+                            <!-- JavaScript will populate -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- KAMPER TAB -->
+        <div id="kamper-tab" class="tab-content hidden">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+                <h3 class="text-2xl font-bold" style="color: var(--rm-navy)">Kampoversikt 2024/25</h3>
+                <div class="flex gap-2 text-sm flex-wrap">
+                    <button class="px-4 py-2 bg-gray-100 rounded-lg font-semibold hover:bg-gray-200 transition" onclick="filterMatches('all')">Alle</button>
+                    <button class="px-4 py-2 bg-gray-100 rounded-lg font-semibold hover:bg-gray-200 transition" onclick="filterMatches('home')">Hjemme</button>
+                    <button class="px-4 py-2 bg-gray-100 rounded-lg font-semibold hover:bg-gray-200 transition" onclick="filterMatches('away')">Borte</button>
+                    <button class="px-4 py-2 bg-gray-100 rounded-lg font-semibold hover:bg-gray-200 transition" onclick="filterMatches('laliga')">La Liga</button>
+                    <button class="px-4 py-2 bg-gray-100 rounded-lg font-semibold hover:bg-gray-200 transition" onclick="filterMatches('cl')">Champions League</button>
+                </div>
+            </div>
+
+            <div id="matches-list" class="space-y-4">
+                <!-- JavaScript will populate -->
+            </div>
+
+            <div class="rm-card p-6 mt-8">
+                <h3 class="text-xl font-bold mb-4" style="color: var(--rm-navy)">Kommende Kamper</h3>
+                <div class="space-y-4" id="upcoming-matches">
+                    <!-- JavaScript will populate -->
+                </div>
+            </div>
+        </div>
+
+        <!-- PREDICTIONS TAB -->
+        <div id="predictions-tab" class="tab-content hidden">
+            <h3 class="text-2xl font-bold mb-6" style="color: var(--rm-navy)">Kampforutsigelser</h3>
+            
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                <!-- Vinner-sannsynlighet -->
+                <div class="rm-card p-6">
+                    <h4 class="font-semibold mb-4 text-gray-600">Vinner-sannsynlighet</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-semibold">Real Madrid</span>
+                                <span class="font-black text-green-600">65%</span>
+                            </div>
+                            <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-green-500 to-green-600" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-semibold">Uavgjort</span>
+                                <span class="font-black text-yellow-600">20%</span>
+                            </div>
+                            <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-yellow-500 to-yellow-600" style="width: 20%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-semibold">Valencia</span>
+                                <span class="font-black text-red-600">15%</span>
+                            </div>
+                            <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-red-500 to-red-600" style="width: 15%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Over/Under -->
+                <div class="rm-card p-6">
+                    <h4 class="font-semibold mb-4 text-gray-600">Over/Under Mål</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">Over 2.5 mål</span>
+                            <span class="font-black text-green-600">70%</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">Under 2.5 mål</span>
+                            <span class="font-black text-gray-600">30%</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                            <span class="font-medium">Over 3.5 mål</span>
+                            <span class="font-black text-blue-600">45%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mest sannsynlig resultat -->
+                <div class="rm-card p-6">
+                    <h4 class="font-semibold mb-4 text-gray-600">Mest Sannsynlig Resultat</h4>
+                    <div class="text-center py-6">
+                        <div class="flex items-center justify-center gap-4 mb-4">
+                            <span class="text-4xl font-black" style="color: var(--rm-navy)">2</span>
+                            <span class="text-2xl text-gray-400">-</span>
+                            <span class="text-4xl font-black text-gray-600">1</span>
+                        </div>
+                        <p class="text-sm text-gray-500">Real Madrid seier</p>
+                        <p class="text-xs text-gray-400 mt-2">Sannsynlighet: 18%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Sammenligning -->
+            <div class="grid lg:grid-cols-2 gap-6 mb-8">
+                <div class="rm-card p-6">
+                    <h4 class="text-xl font-bold mb-4" style="color: var(--rm-navy)">Real Madrid Form</h4>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Form siste 5</span>
+                            <div class="flex gap-1">
+                                <div class="form-indicator form-w">W</div>
+                                <div class="form-indicator form-w">W</div>
+                                <div class="form-indicator form-d">D</div>
+                                <div class="form-indicator form-l">L</div>
+                                <div class="form-indicator form-w">W</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Mål per kamp</span>
+                            <span class="font-bold text-green-600">2.4</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Mål innsluppet per kamp</span>
+                            <span class="font-bold text-red-600">1.1</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Offensiv styrke</span>
+                            <span class="font-bold">9.1 / 10</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Defensiv styrke</span>
+                            <span class="font-bold">8.3 / 10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rm-card p-6">
+                    <h4 class="text-xl font-bold mb-4" style="color: var(--rm-navy)">Valencia Form</h4>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Form siste 5</span>
+                            <div class="flex gap-1">
+                                <div class="form-indicator form-l">L</div>
+                                <div class="form-indicator form-d">D</div>
+                                <div class="form-indicator form-w">W</div>
+                                <div class="form-indicator form-l">L</div>
+                                <div class="form-indicator form-d">D</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Mål per kamp</span>
+                            <span class="font-bold text-green-600">1.1</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Mål innsluppet per kamp</span>
+                            <span class="font-bold text-red-600">1.6</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Offensiv styrke</span>
+                            <span class="font-bold">5.8 / 10</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Defensiv styrke</span>
+                            <span class="font-bold">6.2 / 10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nøkkelspillere -->
+            <div class="rm-card p-6">
+                <h4 class="text-xl font-bold mb-4" style="color: var(--rm-navy)">Nøkkelspillere i Form</h4>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center text-white font-bold">7</div>
+                            <div>
+                                <p class="font-semibold">Kylian Mbappé</p>
+                                <p class="text-xs text-gray-500">4 mål siste 5</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <div class="form-indicator form-w text-xs">⚽</div>
+                            <div class="form-indicator form-w text-xs">⚽</div>
+                            <div class="form-indicator form-w text-xs">⚽</div>
+                            <div class="form-indicator form-d text-xs">-</div>
+                            <div class="form-indicator form-w text-xs">⚽</div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-900 to-purple-700 rounded-full flex items-center justify-center text-white font-bold">20</div>
+                            <div>
+                                <p class="font-semibold">Vinícius Júnior</p>
+                                <p class="text-xs text-gray-500">3 mål + 2 assists</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <div class="form-indicator form-w text-xs">⚽</div>
+                            <div class="form-indicator form-w text-xs">🎯</div>
+                            <div class="form-indicator form-w text-xs">⚽</div>
+                            <div class="form-indicator form-l text-xs">-</div>
+                            <div class="form-indicator form-w text-xs">🎯</div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-indigo-900 to-indigo-700 rounded-full flex items-center justify-center text-white font-bold">5</div>
+                            <div>
+                                <p class="font-semibold">Jude Bellingham</p>
+                                <p class="text-xs text-gray-500">2 mål + 1 assist</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-1">
+                            <div class="form-indicator form-w text-xs">⚽</div>
+                            <div class="form-indicator form-w text-xs">-</div>
+                            <div class="form-indicator form-d text-xs">🎯</div>
+                            <div class="form-indicator form-l text-xs">-</div>
+                            <div class="form-indicator form-w text-xs">⚽</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HEAD TO HEAD TAB -->
+        <div id="headtohead-tab" class="tab-content hidden">
+            
+            <!-- Opponent Selector -->
+            <div class="mb-8">
+                <label class="block text-sm font-semibold mb-2" style="color: var(--rm-navy)">Velg motstander:</label>
+                <div class="dropdown">
+                    <button class="rm-button w-full sm:w-auto" onclick="toggleDropdown()">
+                        <span id="selected-opponent">Valencia CF</span>
+                        <span class="ml-2">▼</span>
+                    </button>
+                    <div class="dropdown-content" id="opponent-dropdown">
+                        <div class="dropdown-item" onclick="selectOpponent('Barcelona', '🔴🔵')">
+                            <span class="text-2xl">🔴🔵</span>
+                            <span class="font-semibold">Barcelona</span>
+                        </div>
+                        <div class="dropdown-item" onclick="selectOpponent('Atlético Madrid', '🔴⚪')">
+                            <span class="text-2xl">🔴⚪</span>
+                            <span class="font-semibold">Atlético Madrid</span>
+                        </div>
+                        <div class="dropdown-item" onclick="selectOpponent('Valencia CF', '🦇')">
+                            <span class="text-2xl">🦇</span>
+                            <span class="font-semibold">Valencia CF</span>
+                        </div>
+                        <div class="dropdown-item" onclick="selectOpponent('Sevilla FC', '🔴⚪')">
+                            <span class="text-2xl">🔴⚪</span>
+                            <span class="font-semibold">Sevilla FC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Match (Real Madrid style) -->
+            <div class="rm-card p-8 mb-8">
+                <div class="text-center mb-6">
+                    <p class="text-sm text-gray-500 mb-2">NESTE KAMP</p>
+                    <p class="text-2xl font-bold mb-1" style="color: var(--rm-navy)">Real Madrid vs Valencia CF</p>
+                    <p class="text-sm text-gray-500">La Liga • Matchday 23</p>
+                </div>
+                
+                <div class="flex items-center justify-center gap-8 mb-8">
+                    <div class="text-center">
+                        <div class="w-24 h-24 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full mx-auto mb-3 flex items-center justify-center shadow-lg">
+                            <svg class="w-14 h-14 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                            </svg>
+                        </div>
+                        <p class="font-bold text-lg">Real Madrid</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500 mb-1">Sunday, Feb 8</p>
+                        <p class="text-3xl font-black mb-1" style="color: var(--rm-navy)">21:00</p>
+                        <p class="text-xs text-gray-500">CET</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-3 flex items-center justify-center shadow-lg">
+                            <span class="text-5xl">🦇</span>
+                        </div>
+                        <p class="font-bold text-lg">Valencia CF</p>
+                    </div>
+                </div>
+
+                <!-- Stadium Info -->
+                <div class="border-t pt-6">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-3 text-gray-700">📍 Stadion</h4>
+                            <p class="font-bold mb-1">Estadio de Mestalla</p>
+                            <p class="text-sm text-gray-600">Valencia, Spania</p>
+                            <p class="text-sm text-gray-600">Kapasitet: 49,000</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-3 text-gray-700">📖 Historie</h4>
+                            <p class="text-sm text-gray-600">Mestalla er et av Spanias mest ikoniske stadioner, åpnet i 1923. Kjent for sin intense atmosfære og nærhet til banen.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expected Formation -->
+                <div class="border-t pt-6 mt-6">
+                    <h4 class="font-semibold mb-4 text-gray-700">🔮 Forventet Formasjon (4-3-3)</h4>
+                    <p class="text-sm text-gray-500 italic">Lineup oppdateres 1 time før kampen</p>
+                </div>
+            </div>
+
+            <!-- Head to Head Stats -->
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="rm-card p-6 text-center">
+                    <p class="text-sm text-gray-500 mb-2">Total kamper</p>
+                    <p class="text-4xl font-black mb-3" style="color: var(--rm-navy)">10</p>
+                    <p class="text-xs text-gray-400">Siste møter</p>
+                </div>
+                <div class="rm-card p-6">
+                    <p class="text-sm text-gray-500 mb-3 text-center">Resultater</p>
+                    <div class="flex justify-around">
+                        <div class="text-center">
+                            <p class="text-3xl font-black text-green-600">6</p>
+                            <p class="text-xs text-gray-500">Seiere</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-3xl font-black text-yellow-600">2</p>
+                            <p class="text-xs text-gray-500">Uavgjort</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-3xl font-black text-red-600">2</p>
+                            <p class="text-xs text-gray-500">Tap</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="rm-card p-6 text-center">
+                    <p class="text-sm text-gray-500 mb-2">Form (siste 5)</p>
+                    <div class="flex justify-center gap-1 mt-3">
+                        <div class="form-indicator form-w">W</div>
+                        <div class="form-indicator form-l">L</div>
+                        <div class="form-indicator form-w">W</div>
+                        <div class="form-indicator form-d">D</div>
+                        <div class="form-indicator form-w">W</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Matches -->
+            <div class="rm-card mb-8">
+                <div class="p-6 border-b">
+                    <h4 class="text-xl font-bold" style="color: var(--rm-navy)">Siste 10 Møter</h4>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="rm-table">
+                        <thead>
+                            <tr>
+                                <th>Dato</th>
+                                <th>Hjemme</th>
+                                <th class="text-center">Resultat</th>
+                                <th>Borte</th>
+                                <th>Competition</th>
+                                <th>Venue</th>
+                            </tr>
+                        </thead>
+                        <tbody id="h2h-matches">
+                            <!-- JavaScript will populate -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Top Scorers & Players -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="rm-card p-6">
+                    <h4 class="text-xl font-bold mb-4" style="color: var(--rm-navy)">⚽ Toppscorere i Duellen</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium">Kylian Mbappé</span>
+                            <span class="font-bold text-green-600">4 mål</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium">Vinícius Júnior</span>
+                            <span class="font-bold text-green-600">3 mål</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium">Jude Bellingham</span>
+                            <span class="font-bold text-green-600">2 mål</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rm-card p-6">
+                    <h4 class="text-xl font-bold mb-4" style="color: var(--rm-navy)">👥 Flest Kamper i Duellen</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium">Luka Modrić</span>
+                            <span class="font-bold">8 kamper</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium">Dani Carvajal</span>
+                            <span class="font-bold">7 kamper</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium">Federico Valverde</span>
+                            <span class="font-bold">6 kamper</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Player Modal -->
+    <div class="modal" id="player-modal" onclick="closePlayerModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="p-6 border-b flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold" id="modal-player-name" style="color: var(--rm-navy)"></h3>
+                    <p class="text-gray-500" id="modal-player-position"></p>
+                </div>
+                <button class="text-4xl text-gray-400 hover:text-gray-600 transition" onclick="closePlayerModal()">&times;</button>
+            </div>
+            <div class="p-6" id="modal-player-content">
+                <!-- JavaScript will populate -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock Data
+        const playersData = [
+            { name: "Kylian Mbappé", pos: "FW", num: 7, matches: 25, minutes: 2100, goals: 18, assists: 4, rating: 7.8, yellow: 1, red: 0, injury: null },
+            { name: "Vinícius Júnior", pos: "LW", num: 20, matches: 24, minutes: 2000, goals: 15, assists: 8, rating: 7.9, yellow: 3, red: 0, injury: null },
+            { name: "Jude Bellingham", pos: "CM", num: 5, matches: 23, minutes: 1950, goals: 12, assists: 5, rating: 7.6, yellow: 4, red: 0, injury: null },
+            { name: "Rodrygo", pos: "RW", num: 11, matches: 22, minutes: 1800, goals: 8, assists: 6, rating: 7.3, yellow: 2, red: 0, injury: null },
+            { name: "Federico Valverde", pos: "CM", num: 15, matches: 26, minutes: 2200, goals: 4, assists: 7, rating: 7.5, yellow: 5, red: 0, injury: null },
+            { name: "Thibaut Courtois", pos: "GK", num: 1, matches: 20, minutes: 1800, goals: 0, assists: 0, rating: 7.2, yellow: 1, red: 0, injury: null },
+            { name: "Antonio Rüdiger", pos: "CB", num: 22, matches: 24, minutes: 2100, goals: 2, assists: 1, rating: 7.1, yellow: 3, red: 0, injury: null },
+            { name: "Dani Carvajal", pos: "RB", num: 2, matches: 21, minutes: 1850, goals: 1, assists: 3, rating: 7.0, yellow: 4, red: 0, injury: "Skade" },
+        ];
+
+        const matchesData = [
+            { date: "Feb 1, 2025", home: "Real Madrid", away: "Rayo Vallecano", score: "2-1", result: "win", venue: "H", comp: "La Liga" },
+            { date: "Jan 25, 2025", home: "Real Madrid", away: "RB Salzburg", score: "5-1", result: "win", venue: "H", comp: "Champions League" },
+            { date: "Jan 19, 2025", home: "Barcelona", away: "Real Madrid", score: "5-2", result: "loss", venue: "A", comp: "La Liga" },
+            { date: "Jan 16, 2025", home: "Real Madrid", away: "Celta Vigo", score: "2-1", result: "win", venue: "H", comp: "La Liga" },
+            { date: "Jan 12, 2025", home: "Real Madrid", away: "Mallorca", score: "3-0", result: "win", venue: "H", comp: "La Liga" },
+        ];
+
+        const h2hMatches = [
+            { date: "Oct 15, 2024", home: "Valencia CF", away: "Real Madrid", score: "0-2", comp: "La Liga", venue: "Mestalla" },
+            { date: "Apr 3, 2024", home: "Real Madrid", away: "Valencia CF", score: "3-1", comp: "La Liga", venue: "Bernabéu" },
+            { date: "Nov 11, 2023", home: "Valencia CF", away: "Real Madrid", score: "1-1", comp: "La Liga", venue: "Mestalla" },
+            { date: "May 2, 2023", home: "Real Madrid", away: "Valencia CF", score: "2-1", comp: "La Liga", venue: "Bernabéu" },
+            { date: "Feb 5, 2023", home: "Valencia CF", away: "Real Madrid", score: "0-2", comp: "La Liga", venue: "Mestalla" },
+        ];
+
+        // Tab switching
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.rm-tab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            document.getElementById(tabName + '-tab').classList.add('animate-fade-in');
+            event.target.classList.add('active');
+        }
+
+        // Populate players table
+        function populatePlayersTable() {
+            const tbody = document.getElementById('players-table-body');
+            tbody.innerHTML = playersData.map(p => `
+                <tr class="cursor-pointer" onclick="showPlayerModal('${p.name}')">
+                    <td>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-900 to-blue-700 rounded-full flex items-center justify-center text-white font-bold text-sm">${p.num}</div>
+                            <span class="font-semibold">${p.name}</span>
+                        </div>
+                    </td>
+                    <td class="text-center text-sm font-medium">${p.pos}</td>
+                    <td class="text-center">${p.matches}</td>
+                    <td class="text-center text-sm">${p.minutes}'</td>
+                    <td class="text-center font-bold text-green-600">${p.goals}</td>
+                    <td class="text-center font-bold text-blue-600">${p.assists}</td>
+                    <td class="text-center font-bold">${p.rating}</td>
+                    <td class="text-center">${p.yellow > 0 ? '🟨 ' + p.yellow : '-'}</td>
+                    <td class="text-center">
+                        ${p.injury ? '<span class="text-xs px-2 py-1 bg-red-100 text-red-700 rounded-full font-semibold">Skade</span>' : '<span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-semibold">Fit</span>'}
+                    </td>
+                    <td class="text-center text-gray-400">→</td>
+                </tr>
+            `).join('');
+        }
+
+        // Show player modal
+        function showPlayerModal(playerName) {
+            const player = playersData.find(p => p.name === playerName);
+            if (!player) return;
+            
+            document.getElementById('modal-player-name').textContent = player.name;
+            document.getElementById('modal-player-position').textContent = player.pos + ' • #' + player.num;
+            
+            const content = `
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500 mb-1">Kamper</p>
+                        <p class="text-2xl font-bold">${player.matches}</p>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500 mb-1">Minutter</p>
+                        <p class="text-2xl font-bold">${player.minutes}'</p>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500 mb-1">Rating</p>
+                        <p class="text-2xl font-bold">${player.rating}</p>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500 mb-1">Status</p>
+                        <p class="text-sm font-semibold ${player.injury ? 'text-red-600' : 'text-green-600'}">${player.injury || 'Fit'}</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500 mb-2">⚽ Mål</p>
+                        <p class="text-3xl font-bold text-green-600">${player.goals}</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500 mb-2">🎯 Assists</p>
+                        <p class="text-3xl font-bold text-blue-600">${player.assists}</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500 mb-2">🟨 Gule kort</p>
+                        <p class="text-3xl font-bold text-yellow-600">${player.yellow}</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <p class="text-sm text-gray-500 mb-2">🟥 Røde kort</p>
+                        <p class="text-3xl font-bold text-red-600">${player.red}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modal-player-content').innerHTML = content;
+            document.getElementById('player-modal').classList.add('active');
+        }
+
+        function closePlayerModal() {
+            document.getElementById('player-modal').classList.remove('active');
+        }
+
+        // Populate matches
+        function populateMatches() {
+            const list = document.getElementById('matches-list');
+            list.innerHTML = matchesData.map(m => {
+                const resultClass = m.result === 'win' ? 'border-green-500' : m.result === 'loss' ? 'border-red-500' : 'border-yellow-500';
+                const resultText = m.result === 'win' ? 'Seier' : m.result === 'loss' ? 'Tap' : 'Uavgjort';
+                const resultColor = m.result === 'win' ? 'text-green-600' : m.result === 'loss' ? 'text-red-600' : 'text-yellow-600';
+                
+                return `
+                    <div class="rm-card p-6 border-l-4 ${resultClass}">
+                        <div class="flex items-center justify-between flex-wrap gap-4">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">${m.date} • ${m.comp}</p>
+                                <p class="font-bold text-lg">${m.home} vs ${m.away}</p>
+                                <span class="text-xs px-2 py-1 bg-gray-100 rounded-full">${m.venue === 'H' ? '🏠 Hjemme' : '✈️ Borte'}</span>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-3xl font-black mb-1">${m.score}</p>
+                                <p class="text-sm font-semibold ${resultColor}">${resultText}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Populate upcoming matches
+        function populateUpcomingMatches() {
+            const upcoming = [
+                { date: "Feb 8, 2025", time: "21:00", opponent: "Valencia CF", venue: "A", comp: "La Liga" },
+                { date: "Feb 14, 2025", time: "21:00", opponent: "RB Leipzig", venue: "H", comp: "Champions League" },
+                { date: "Feb 17, 2025", time: "21:00", opponent: "Benfica", venue: "A", comp: "Champions League" },
+            ];
+            
+            const list = document.getElementById('upcoming-matches');
+            list.innerHTML = upcoming.map(m => `
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+                    <div>
+                        <p class="font-semibold">${m.opponent}</p>
+                        <p class="text-sm text-gray-500">${m.comp} • ${m.venue === 'H' ? '🏠 Hjemme' : '✈️ Borte'}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold">${m.date}</p>
+                        <p class="text-sm text-gray-500">${m.time}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Populate H2H matches
+        function populateH2HMatches() {
+            const tbody = document.getElementById('h2h-matches');
+            tbody.innerHTML = h2hMatches.map(m => `
+                <tr>
+                    <td>${m.date}</td>
+                    <td class="font-semibold">${m.home}</td>
+                    <td class="text-center font-bold">${m.score}</td>
+                    <td class="font-semibold">${m.away}</td>
+                    <td><span class="stat-badge">${m.comp}</span></td>
+                    <td class="text-sm text-gray-500">${m.venue}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Dropdown
+        function toggleDropdown() {
+            document.getElementById('opponent-dropdown').classList.toggle('active');
+        }
+
+        function selectOpponent(name, emoji) {
+            document.getElementById('selected-opponent').textContent = name;
+            toggleDropdown();
+        }
+
+        // Filter matches
+        function filterMatches(filter) {
+            console.log('Filter:', filter);
+        }
+
+        // Sort players
+        function sortPlayers(sortBy) {
+            console.log('Sort by:', sortBy);
+        }
+
+        // Update data button
+        function updateData() {
+            alert('Data oppdatert! (Dette ville hente ny data fra API)');
+        }
+
+        // Initialize
+        populatePlayersTable();
+        populateMatches();
+        populateUpcomingMatches();
+        populateH2HMatches();
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('opponent-dropdown');
+            if (!event.target.closest('.dropdown')) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
+
+</body>
+</html>
